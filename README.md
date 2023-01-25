@@ -46,7 +46,9 @@ Set-PSReadLineKeyHandler -Chord Ctrl+b -Function BackwardWord
 after installing VSCode, Powershell 7+ and Githubdesktop. 
 
 open powershell 7(not windows powershell),
-type `code $profile`. hit enter. ![picture showing powershell window with "code $profile"](2023-01-25-10-55-35.png)
+type `code $profile`. hit enter.
+
+![picture showing powershell window with "code $profile"](/assets/images/2023-01-25-10-55-35.png)
 
  wait for visual studio code to launch and paste in my predictive intellisense config. save this file and it should be good to go.
 
