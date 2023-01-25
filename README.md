@@ -46,9 +46,7 @@ Set-PSReadLineKeyHandler -Chord Ctrl+b -Function BackwardWord
 after installing VSCode, Powershell 7+ and Githubdesktop. 
 
 open powershell 7(not windows powershell),
-type `code $profile`. hit enter.
-
-![picture showing powershell window with "code $profile"](/assets/images/2023-01-25-10-55-35.png)
+type `code $profile`. hit enter. ![picture showing powershell window with "code $profile"](2023-01-25-10-55-35.png)
 
  wait for visual studio code to launch and paste in my predictive intellisense config. save this file and it should be good to go.
 
@@ -68,7 +66,7 @@ Get-WindowsCapability -Name "*ShellComponents*" -Online | Add-WindowsCapability 
 
 Visual Studio Code vs Notepad++. VSC is just better.
 
-- official editor for powershell. Powershell ISE deprecated
+- Official editor for powershell. Powershell ISE deprecated
 - Github integration
 
 <https://code.visualstudio.com/>
@@ -124,8 +122,8 @@ if you are creating your own functions. look at the list approved verbs <https:/
 with the verb-noun information we can quickly get more commands
 
 ```powershell
-get-command -verb "get" -noun "loc*"
-get-command -noun "location"
+Get-Command -Verb "get" -Noun "loc*"
+Get-Command -Noun "location"
 ```
 
 ### Task 1
@@ -134,9 +132,9 @@ explore the commands in table above. ping some website
 
 test out predictive intellisense with shift+tab. Try it with
 
-- "`Get-NetIPConfiguration -`"
-- "`Test-Connection -`"
-- try out `test-connection -quiet -TargetPath "Your Favorite site"`
+- `Get-NetIPConfiguration -`
+- `Test-Connection -`
+- try out `Test-Connection -Quiet -TargetPath "<Your Favorite site>"`
 
 ## Variables and data types
 
@@ -146,15 +144,15 @@ you have built inn variables like $ErrorActionPreference
 
 ```powershell
 # this should display all variables
-get-variable
+Get-Variable
 ```
 
 and user defined ones that you make yourself.
 
 ```powershell
-$MyGivenName = "David"
-$MySurName = "Etternavn"
-$MyGivenname + " " + $MySurname
+$myGivenName = "David"
+$mySurname = "Etternavn"
+$myGivenName + " " + $MySurname
 $var1 = "-1"
 $var2 = 2
 $sum = $var1 + $var2
@@ -191,6 +189,7 @@ $language = 'Powershell'
 $color = 'purple'
 $sentence = "$language the powershell mascot has $color hair"
 $sentence2 = '$language the powershell mascot has $color hair'
+
 # you dont have to store it as a variable to run it. this also works fine
 "$language the powershell mascot has $color hair"
 ```
@@ -200,7 +199,7 @@ $sentence2 = '$language the powershell mascot has $color hair'
 represented with `@"  "@` block with either singlequote or double quote. Since anything inside it is displayed. the ending block has to be without tab or spaces and on a new line to work. otherwise it wont terminate the here string
 
 ```powershell
-$date = get-date
+$date = Get-Date
 $herestring = @"
 This is a string
         Today's date is : $date
@@ -227,10 +226,11 @@ fancy ascii art or whatever
 with command execution $() you can run big chunks of code inside your text if you wanted to or just singular commands.
 
 ```powershell
-$date = get-date
+$date = Get-Date
 $string = "today is $date"
+
 # the above could also be written as
-$string = "today is $(get-date)"
+$string = "today is $(Get-Date)"
 ```
 
 ### TASK 3
@@ -246,10 +246,10 @@ more on this topic here
 
 ```powershell
 $var = "stuff written here", "more stuff written here"
-# check these out
-$var | get-member
-get-member -inputobject $var
 
+# check these out
+$var | Get-Member
+Get-Member -InputObject $var
 ```
 
 ### task 4
@@ -267,17 +267,20 @@ creation of an empty array
 
 ```powershell
 $data = @()
+
 # check the count to see if its empty or not.
-$data.count
+$data.Count
 ```
 
 creation of an array with values in one go
 
 ```powershell
-$data = @('Zero','One','Two','Three')
+$data = @('Zero', 'One', 'Two', 'Three')
+
 # checking its contents.
 $data.count
 $data
+
 # or multiline since its easier to read
 $data = @(
     'Zero'
@@ -287,10 +290,10 @@ $data = @(
 )
 ```
 
-comma separated lines can also create an array and work most of the time.
+comma separated lines can also create an array and work mots of the time.
 
 ```powershell
-$data = 'Zero','One','Two','Three'
+$data = 'Zero', 'One', 'Two', 'Three'
 ```
 
 to access individual items use brackets []. remember that the first item is [0]
@@ -299,12 +302,16 @@ to access individual items use brackets []. remember that the first item is [0]
 #  
 $data[0]
 $data[3]
+
 # negative values go from the end. so last item is [-1]
 $data[-1]
+
 # multiple also possible
-$data[3,0,3]
+$data[3, 0, 3]
+
 #or range with the .. operator
 $data[1..3]
+
 # or reverse
 $data[3..1]
 ```
@@ -314,6 +321,7 @@ updating values and adding to an array
 ```powershell
 # updating a value
 $data[1] = "fifty"
+
 # adding to an array
 $data += "four"
 
@@ -333,6 +341,7 @@ $myarray = [System.Collections.ArrayList]::new()
 [void]$myArray.Add('Value')
 $somevalue ="othervalue"
 [void]$myArray.Add($somevalue)
+
 # and removing from array
 $everyExistingFolder.Remove('Value')
 
@@ -346,20 +355,24 @@ $everyExistingFolder.Remove('Value')
 $myObject = [PSCustomObject]@{
     Name     = 'Kevin'
     Language = 'PowerShell'
-    State    = 'Illinois'
+    State    = 'Texas'
 }
+
 # can be accessed like a normal object
 $myObject.Name
+
 # adding new properties to an object
-$myObject | Add-Member -MemberType NoteProperty -Name 'ID' -Value 'McCallister'
+$myObject | Add-Member -MemberType NoteProperty -Name 'ID' -Value 'KevinMarquette'
+
 # and looking at it
 $myObject.ID
-# removing a property 
-$myObject.psobject.Properties.Remove("ID")
 
-#when using objects in strings. funny thing can happen
+# removing a property 
+$myObject.PSObject.Properties.Remove("ID")
+
+# when using objects in strings. funny thing can happen
 "hello $myobject" 
-# this above would print as hello @{Name=Kevin; Language=PowerShell; State=Illinois}
+# this above would print as hello @{ Name=Kevin; Language=PowerShell; State=Texas }
 # $() is how you expand on something on an expression in a string 
 "hello $($myobject.name)"
 ```
@@ -369,29 +382,27 @@ more info on pscustomobjects <https://docs.microsoft.com/en-us/powershell/script
 
 ### Hashtable
 
-super fast but has its limits. if you encounter preformance issues. look into converting your arrays or arraylists if possible to hashtables.
+Super fast but has its limits. If you encounter preformance issues. look into converting your arrays or arraylists if possible to hashtables.
 
 ```powershell
-$htable = @{EmpName="Charlie";City="New York";EmpID="001"}
+$htable = @{ EmpName="Charlie"; City="New York"; EmpID="001" }
 $htable2 = @{
-
-“key1” = “value1”
-
-“key2” = “value2”
-
+    “Key1” = “value1”
+    “Key2” = “value2”
+    Key3 = "value3"
 }
 ```
 
 ### Task 5
 
-- create an array and an arraylist.
-- add a psCustomObject to each, add one text string and one number(make sure its stored as an int)
-- access individual items in the array and array list.
-- run .gettype() on the array/arraylist and the individual items.
+- Create an array and an arraylist.
+- Add a psCustomObject to each, add one text string and one number(make sure its stored as an int)
+- Access individual items in the array and array list.
+- Run .gettype() on the array/arraylist and the individual items.
 
 ## piping
 
-pipe `|` is usefull for oneliners but generaly slower than other methods, using it in the command line is fine. using it in scripts if you hit performance issues might be something to consider removing.
+Pipe `|` is usefull for oneliners but generaly slower than other methods, using it in the command line is fine. using it in scripts if you hit performance issues might be something to consider removing.
 
 ```powershell
 'wuauserv' | Get-Service 
@@ -412,54 +423,54 @@ Get-Content -Path $env:USERPROFILE\Services.txt | Get-Service
 
 ## operators
 
-more about operators here
+More about operators here
 <https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.2>
 or `get-help about_operators`
 
-there are plenty but the logical and comparison operators are the most used ones.
+There are plenty but the logical and comparison operators are the most used ones.
 
 ### Comparison operators
 
-- 1 -eq 1
-- 1 -ne 1
-- (0..10) -contains 8
-- "burgers are awesome" -like "\*are\*"
-- "burger" -match "burger"
-- 1 -gt 2
-- 1 -lt 2
-- 3 -ge 3
+- `1 -eq 1`
+- `1 -ne 1`
+- `(0..10) -contains 8`
+- `"burgers are awesome" -like "\*are\*"`
+- `"burger" -match "burger"`
+- `1 -gt 2`
+- `1 -lt 2`
+- `3 -ge 3`
 
 etc.
 
 ### logical operators
 
-- 1 -eq 1 -and 1 -eq 2
-- 1 -eq 1 -or 1 -eq 2
-- 1 -eq 1 -xor 1 -eq 2
-- -not(1 -eq 1)
+- `1 -eq 1 -and 1 -eq 2`
+- `1 -eq 1 -or 1 -eq 2`
+- `1 -eq 1 -xor 1 -eq 2`
+- `-not(1 -eq 1)`
 
--xor is exclusive or.
+`-xor` is exclusive or.
 
 ![exclusive or table](/assets/images/2022-07-04-16-36-32.png)
 
 ### task 7
 
-try running the operators listed
+Try running the operators listed
 
 ## controll flow
 
 ### if
 
 ```powershell
-if(1 -eq 1){"hurray, its true"}
+if (1 -eq 1) { "hurray, its true" }
 # or more complex
-if(test-connection -count 1 -quiet nrk.no){"NRK is online"}
+if (Test-Connection -count 1 -quiet nrk.no) { "NRK is online" }
 ```
 
 ### if not
 
 ```powershell
-if (-not( 1 -eq 2)) { $true }
+if (-not ( 1 -eq 2)) { $true }
 # or 
 if (!( 1 -eq 2)) { $true }
 ```
@@ -467,14 +478,14 @@ if (!( 1 -eq 2)) { $true }
 ### else and else if
 
 ```powershell
-if (test-connection -count 1 -quiet nrk.no) { "NRK is online" }
+if (Test-Connection -Count 1 -Quiet nrk.no) { "NRK is online" }
 else { "NRK is not responding" }
 ```
 
 ```powershell
-if (test-connection -count 1 -quiet nrk.no) { "NRK is online" }
-elseif (test-connection bbc.com -count 1 -quiet) { "bbc is online" }
-elseif (1-eq 3){"can have many more"}
+if (Test-Connection -Count 1 -Quiet nrk.no) { "NRK is online" }
+elseif (Test-Connection bbc.com -Count 1 -Quiet) { "bbc is online" }
+elseif (1 -eq 3) { "can have many more" }
 else { "NRK is not responding" }
 ```
 
@@ -485,20 +496,21 @@ switch is like an if statement. but much simpler when it comes to checking multi
 ```powershell
 switch (3)
 {
-    1 {"It is one."}
-    2 {"It is two."}
-    3 {"It is three."}
-    4 {"It is four."}
+    1 { "It is one." }
+    2 { "It is two." }
+    3 { "It is three." }
+    4 { "It is four." }
 }
+
 # or multiple, or text.
 switch (4, 2, "five")
 {
-    1 {"It is one." }
-    2 {"It is two." }
-    3 {"It is three." }
-    4 {"It is four." }
-    3 {"Three again."}
-    "five" {"It is five."}
+    1 { "It is one." }
+    2 { "It is two." }
+    3 { "It is three." }
+    4 { "It is four." }
+    3 { "Three again." }
+    "five" { "It is five." }
 }
 ```
 
@@ -524,23 +536,23 @@ basic scripting you probably wont need for loop that much, but if you draw graph
 ```powershell
 # <Init> intialises the counter
 # <Condition> for continuing and doing your thing is this.
-# <Repeat> adding to your conter, usually $i++(adds 1) or even $i+=2(adds two)
+# <Repeat> adding to your conter, usually $i++ (adds 1) or even $i+=2 (adds two)
 for (<Init>; <Condition>; <Repeat>)
 {
     <Statement list>
 }
 
-# a simple for loop would look like this
+# A simple for loop would look like this
 
 for ($i = 0; $i -lt 100; $i++) {
-Write-Host "im doing something 100 times, this is #$i"
+    Write-Host "im doing something 100 times, this is #$i"
 }
 
 # or you can count the number of things in an array
 
-$list = "Finn","Jake","Princess bubblegum","Steve"
+$list = "Finn", "Jake", "Princess bubblegum", "Steve"
 for ($i = 0; $i -lt $list.Count; $i++) {
-    write-host "$($list[$i]) is a cool person"
+    Write-Host "$($list[$i]) is a cool person"
 }
 ```
 
@@ -549,8 +561,8 @@ for ($i = 0; $i -lt $list.Count; $i++) {
 Probably the easiest to use.
 
 ```powershell
-$list = "Finn","Jake","Princess bubblegum","Steve"
-foreach($person in $list){
+$list = "Finn", "Jake", "Princess bubblegum", "Steve"
+foreach ($person in $list) {
     write-host "$person is a cool person"
 }
 ```
@@ -560,7 +572,7 @@ foreach($person in $list){
 this uses the pipeline which is seen as slower.
 
 ```powershell
-$list = "Finn","Jake","Princess bubblegum","Steve"
+$list = "Finn", "Jake", "Princess bubblegum", "Steve"
 $list | ForEach-Object {"$_ is a cool person"}
 ```
 
@@ -571,8 +583,8 @@ There is one way this can be faster than all other loops in some circumstances. 
 the fastest loop and my favorite.
 
 ```powershell
-$list = "Finn","Jake","Princess bubblegum","Steve"
-$list.ForEach({"$_ is a cool person"})
+$list = "Finn", "Jake", "Princess bubblegum", "Steve"
+$list.ForEach({ "$_ is a cool person" })
 ```
 
 there might be some faster but then your probably a c# nerd using .net stuff.
@@ -591,9 +603,9 @@ while($val -ne 3)
 
 ```powershell
 # do while
-do {<statement list>} while (<condition>)
+do { <statement list> } while (<condition>)
 # do until
-do {<statement list>} until (<condition>)
+do { <statement list> } until (<condition>)
 
 
 $x = 1,2,78,0
@@ -602,7 +614,7 @@ do { $count++; $a++; } while ($x[$a] -ne 0)
 $x = 1,2,78,0
 do { $count++; $a++; } until ($x[$a] -eq 0)
 
-as you can see -ne(not equal) and -eq(equal) is changed.
+as you can see -ne (not equal) and -eq (equal) is changed.
 
 ```
 
@@ -625,6 +637,7 @@ function Verb-Noun {
         [string]$Param1,
         [int]$Param2
     )
+
     #CODE
 }
 ```
@@ -634,8 +647,8 @@ Advanced functions are a little more complex, but have much more functionality. 
 function Verb-Noun {
     [CmdletBinding()]
     param (
-        [string]$Param1,
-        [int]$Param2
+        [string] $Param1,
+        [int] $Param2
     )
     
     begin {
@@ -668,9 +681,11 @@ function Verb-Noun {
             "username" {
                 $filter = "SamAccountName -like `"$Username`""
             }
+
             "displayname" {
                 $filter = "DisplayName -like `"$DisplayName`""
             }
+
             "mobilephone" {
                 $filter = "MobilePhone -like `"$MobilePhone`""
             }
@@ -685,18 +700,19 @@ You could merge a collection of functions into a module, which you can use to ea
 
 ## Creating a function
 
-should hand out a cheat sheet for this stuff abve. quick look up on the things mentioned above so they can easily look at when doing some ez labwork.
+Should hand out a cheat sheet for this stuff abve. quick look up on the things mentioned above so they can easily look at when doing some ez labwork.
 
-what i usualy do to quickly generate arrays or get stuff from clipboards is this.
+What i usualy do to quickly generate arrays or get stuff from clipboards is this.
 
 ```powershell
 # i use this 
-$stuff = get-clipboard | where-object {$_}
-# or this, which is same as above but with shortnames
-$stuff = gcb|?{$_}
+$stuff = Get-Clipboard | Where-Object { $_ }
+
+# or this, which is same as above but with short names / aliases
+$stuff = gcb |? { $_ }
 ```
 
-`get-clipboard` gets from your clipboard, whatever you have CTRL+Ced
+`Get-Clipboard` gets from your clipboard, whatever you have CTRL+Ced
 the above can be saved in a function you put in your profile.
 
 TASK
@@ -716,6 +732,7 @@ https://github.com/dfinke/ImportExcel
 ```powershell
 Import-Excel -Path "PATH"
 ```
+
 ```powershell
 Export-Excel -Path "PATH"
 ```
@@ -727,9 +744,11 @@ You can run the following functions to get either users or groups from AD.
 ```powershell
 Get-ADUser "USERNAME"
 ```
+
 ```powershell
 Get-ADGroup "GROUPNAME"
 ```
+
 ```powershell
 Get-ADComputer "COMPUTERNAME"
 ```
