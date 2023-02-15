@@ -3,10 +3,9 @@
 This readme contains the content for the entire course.
 
 whats missing?
-- [ ] function stuff (near bottom)
-- [ ] API stuff (near bottom)
-- [ ] loop stuff(near bottom)
+- [ ] better task for new-aduser
 - [ ] short explanation of wildcards
+- [ ] credentials and predictive intellisense log
 
 ## Prerequisits
 
@@ -23,7 +22,8 @@ The following should be done before the course starts.
 
 ### My Predictive intellisense powerhell config
 
-Predictive intellisense does this
+Predictive intellisense does this.
+
 ![predictive intellisense sample](/assets/images/2022-07-04-10-43-20.png)
 
 uses your previously typed in commands to predict what you want to type in next. Big help in learning.
@@ -46,7 +46,7 @@ Set-PSReadLineKeyHandler -Chord Ctrl+b -Function BackwardWord
 after installing VSCode, Powershell 7+ and Githubdesktop. 
 
 open powershell 7(not windows powershell),
-type `code $profile`. hit enter. ![picture showing powershell window with "code $profile"](2023-01-25-10-55-35.png)
+type `code $profile`. hit enter. ![picture showing powershell window with "code $profile"](/assets/images/2023-01-25-10-55-35.png)
 
  wait for visual studio code to launch and paste in my predictive intellisense config. save this file and it should be good to go.
 
@@ -290,7 +290,7 @@ $data = @(
 )
 ```
 
-comma separated lines can also create an array and work mots of the time.
+comma separated lines can also create an array and work most of the time.
 
 ```powershell
 $data = 'Zero', 'One', 'Two', 'Three'
@@ -309,7 +309,7 @@ $data[-1]
 # multiple also possible
 $data[3, 0, 3]
 
-#or range with the .. operator
+# or range with the .. operator
 $data[1..3]
 
 # or reverse
@@ -618,9 +618,66 @@ as you can see -ne (not equal) and -eq (equal) is changed.
 
 ```
 
-where, binarysearch,hashtable, sorting
+#### importing data
+
+If its json, a webpage. excel file, its mostly the same way, for this session i will take clipboard, csv and a webpage.
+
+```powershell
+# this imports a CSV. you can find this in 
+# https://github.com/PowershellGroup/CrashCourse/blob/main/assets/resources/ssb-surnames-norway.csv
+
+# you can download it manually and import it using import-csv
+$Surnames = import-csv /resources/ssb-surnames-norway.csv
+
+# or you could download it directly and convert it from csv in powershell
+$surnames = Invoke-Restmethod -uri "https://raw.githubusercontent.com/PowershellGroup/CrashCourse/main/assets/resources/ssb-surnames-norway.csv" | ConvertFrom-Csv -Delimiter ";"
+# result would the same
+
+# or you could copy the text into clipboard with ctrl+c
+$surnames = Get-Clipboard | ConvertFrom-Csv -Delimiter ";"
+# using here string  with copy paste also works
+$surnames = @"
+surname;amount
+Aa;242
+Aabel;254
+Aaberg;364
+"@ | ConvertFrom-Csv -Delimiter ";"
+
+```
+
+#### Sorting
+
+```powershell
+# sorting alphabetically by surname
+$surname | Sort-Object Surname
+# sorting amount
+$surname | Sort-Object amount
+# here it might not give you what you wanted if the amount is string value. declaring it as int works.
+$surname | Sort-Object {[int]$_.amount}
+
+```
+
+#### where
+
+usefull to quickly find a subset of something.
+
+```powershell
+# this should display all surnames that start with F and have a greater amount than 900
+# with method
+$selection = $surname.where({$_.surname -like "f*" -and $_.amount -gt 900})
+# and with function
+$selection = $surnames | Where-Object -FilterScript {$_.surname -like "f*" -and $_.amount -gt 900}
+```
+
+### TASK 9
+
+In the where above. notice a problem with it?
+make the filter work. the correct amount displayed should be 17
+
+$store the selection as a variable and use .count on it to see if you are correct.
 
 ## Functions
+
 Take a look at all the approved verbs here:
 https://learn.microsoft.com/en-us/powershell/scripting/developer/cmdlet/approved-verbs-for-windows-powershell-commands?view=powershell-7.2
 
@@ -631,6 +688,7 @@ You're able to use automatic variables in functions like:
 You can have 2 different types, basic- and advanced-functions.
 
 Basic functions would just have the bare minimum in order to create a function.
+
 ```powershell
 function Verb-Noun {
     param (
@@ -643,6 +701,7 @@ function Verb-Noun {
 ```
 
 Advanced functions are a little more complex, but have much more functionality. Therefore we most likely would always want to create an advanced function. Here's a basic version of an advanced function.
+
 ```powershell
 function Verb-Noun {
     [CmdletBinding()]
@@ -652,18 +711,27 @@ function Verb-Noun {
     )
     
     begin {
-        #CODE
+        # This code runs at the beginning, once. and is not mandatory
     }
     
     process {
-        #CODE
+        # this code, if you pipe data to the function runs each time.
     }
     
     end {
-        #CODE
+        # this code runs at the end. and is not mandatory.
     }
 }
 ```
+
+you can create a funcition that accepts values from the pipeline. forexample you pipe users into the function. 
+1. Begin part you might create some arrays, get some more data, do things you only need once.
+2. process then does something per item piped into the function.
+3. end runs at the end. maybe posts a completed list of something somewhere, creates an excel file and ships an email someplace.
+
+
+
+
 The advantage of using an advanced function is that it has a lot of built-in functionality. You can e.g. create a function that has parameters that are exclusive from one another.
 You can see more of this in the [Get-MrfkUserInfo](https://github.com/NorskNoobing/NN.MrfkCommands/blob/main/source/Public/Get-MrfkUserInfo.ps1) function.
 
@@ -700,73 +768,35 @@ You could merge a collection of functions into a module, which you can use to ea
 
 ## Creating a function
 
-Should hand out a cheat sheet for this stuff abve. quick look up on the things mentioned above so they can easily look at when doing some ez labwork.
-
-What i usualy do to quickly generate arrays or get stuff from clipboards is this.
+lets create a simple function first.
 
 ```powershell
-# i use this 
-$stuff = Get-Clipboard | Where-Object { $_ }
-
-# or this, which is same as above but with short names / aliases
-$stuff = gcb |? { $_ }
+function Test-NRKConnection {
+    param (
+        $count = 4
+    )
+    test-connection -targetname nrk.no -count $count
+}
 ```
+function above when run, pings NRK.NO for 4 counts. the count 4 is set as default in this instance.
+if you run `Test-NRKConnection -count 5` it will override the 4 with 5.
 
-`Get-Clipboard` gets from your clipboard, whatever you have CTRL+Ced
-the above can be saved in a function you put in your profile.
-
-TASK
-
-## Modules
-
-Some stuff from these modules as they will daily look at AD and SCCM stuff.
-AD module (get-aduser, get-adgroup etc).
-
-You can run this function in order to get a list of all the functions in the module.
-```powershell
-Get-Command -Module "MODULENAME"
-```
-
-### ImportExcel module
-https://github.com/dfinke/ImportExcel
-```powershell
-Import-Excel -Path "PATH"
-```
+a little more
 
 ```powershell
-Export-Excel -Path "PATH"
+function Test-NRKConnection {
+    param (
+        $count = 1
+    )
+    $test = test-connection -targetname nrk.no -quiet -count $count
+if($test){ Write-Output "NRK is Online"} else{Write-Output"NRK is Offline"}
+}
 ```
 
-### ActiveDirectory module
-The AD-module is installed by default on `wintools04`.
 
-You can run the following functions to get either users or groups from AD.
-```powershell
-Get-ADUser "USERNAME"
-```
+### TASK 10
 
-```powershell
-Get-ADGroup "GROUPNAME"
-```
-
-```powershell
-Get-ADComputer "COMPUTERNAME"
-```
-
-### ConfigurationManager module
-MECM module to find deployed computers, who has logged on, their ip etc.
-
-You can import the module by running the following on `wintools04`.
-```powershell
-Import-Module ConfigurationManager
-Set-Location ps1:
-```
-You'll have to set the psdrive to ps1 in order to make all the functions work.
-
-If you want to get the computerinfo of a specific computer you can run the following.
-```powershell
-Get-CMDevice -Name "LT-SADM-001"
-```
+Create a function that pings some webpage and does something with that information.
 
 ## API
 
@@ -802,7 +832,7 @@ Almost all APIS use JSON to structure data.
     }
 }
 ```
-
+using an actual API
 ```powershell
 #flat easy json file to grasp
 $ip = "1.1.1.1"
@@ -813,11 +843,122 @@ $lon = "-118.24"
 $weather = Invoke-RestMethod -uri "https://api.met.no/weatherapi/locationforecast/2.0/compact?&lat=$lat&lon=$lon"
 $weather.properties.timeseries[0].data.instant.details
 ```
+
+### TASK 11
+
+1. Create a function that tests a given IP against ipinfo.io
+
+Using it should be something like this.
+`Get-IpInfo -ip "1.1.1.1"`
+
+2. Create a function that gets the weather of lat/long position.
+
+Using it should be something like this.
+`Get-Weather -lat "34.05" -long -118.24"`
+
+BONUS TASK
+
+3. Create a function that uses IPinfo function to get LAT/LONG.
+then uses that LAT/Long to get the weather using the Weather function.
+
+Using it should be something like this.
+`Get-WeatherIPInfo -ip "1.1.1.1"`
+
+## Modules
+
+You can run this function in order to get a list of all the functions in the module.
+
+```powershell
+Get-Command -Module "MODULENAME"
+```
+
+### ImportExcel module
+
+https://github.com/dfinke/ImportExcel
+
+```powershell
+Import-Excel -Path "PATH"
+```
+
+```powershell
+Export-Excel -Path "PATH"
+```
+
+### ActiveDirectory module
+
+https://learn.microsoft.com/en-us/powershell/module/activedirectory
+
+The AD-module is installed by default on `wintools04`.
+Most commonly used are the Get commands.
+
+To view all get commands you can run the following command.
+
+```powershell
+Get-Command -Module ActiveDirectory -Verb Get
+```
+
+You can run the following functions to get either users or groups from AD.
+
+```powershell
+Get-ADUser "USERNAME"
+```
+
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser
+
+```powershell
+Get-ADGroup "GROUPNAME"
+```
+
+```powershell
+Get-ADComputer "COMPUTERNAME"
+```
+
+#### Active Directory Administrative Center
+
+comes installed with Remote Server Administration Tools, which by default is installed on windows servers.
+
+if you use this instead of `Active Directory Users and Computers` you can look at the powershell command history. any changes you apply with the GUI launches a powershell command.
+
+![screenshot of active directory administrative center powerhse](assets\images\2023-02-07-09-11-48.png)
+
+
+##### TASK 12
+
+create a csv file with a list of 3 users you want to create. create samaccountnames from those names. feed them into new-aduser and see if you manage to create users. 
+
+
+### ConfigurationManager module
+
+MECM module to find deployed computers, who has logged on, their ip etc.
+
+You can import the module by running the following on `wintools04`.
+
+```powershell
+Import-Module ConfigurationManager
+Set-Location ps1:
+```
+
+You'll have to set the psdrive to ps1 in order to make all the functions work.
+
+If you want to get the computerinfo of a specific computer you can run the following.
+
+```powershell
+Get-CMDevice -Name "LT-SADM-001"
+```
+
+### TASK 13
+
+Do this in a test enviroment if you have one.
+
+- make a change to a AD user using Active Directory Administrative Center.
+- find the command it used and use it to change it again to something else using PowerShell.
+- find an aduser using accountname  with powershell.
+
 ## Self Learning
 
 - PSkoan
   - Interactive learning. try doing 1 PSKoan at work everyday. <https://github.com/vexx32/PSKoans>
-- do stuff with powershell instead of GUI
+- Try to do stuff with powershell instead of GUI
 
 ### task future
 
