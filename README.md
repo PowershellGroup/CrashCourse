@@ -494,8 +494,7 @@ else { "NRK is not responding" }
 switch is like an if statement. but much simpler when it comes to checking multiple conditions.
 
 ```powershell
-switch (3)
-{
+switch (3) {
     1 { "It is one." }
     2 { "It is two." }
     3 { "It is three." }
@@ -503,8 +502,7 @@ switch (3)
 }
 
 # or multiple, or text.
-switch (4, 2, "five")
-{
+switch (4, 2, "five") {
     1 { "It is one." }
     2 { "It is two." }
     3 { "It is three." }
@@ -537,8 +535,7 @@ basic scripting you probably wont need for loop that much, but if you draw graph
 # <Init> intialises the counter
 # <Condition> for continuing and doing your thing is this.
 # <Repeat> adding to your conter, usually $i++ (adds 1) or even $i+=2 (adds two)
-for (<Init>; <Condition>; <Repeat>)
-{
+for (<Init>; <Condition>; <Repeat>){
     <Statement list>
 }
 
@@ -592,8 +589,7 @@ there might be some faster but then your probably a c# nerd using .net stuff.
 #### While
 
 ```powershell
-while($val -ne 3)
-{
+while($val -ne 3){
     $val++
     Write-Host $val
 }
@@ -724,13 +720,11 @@ function Verb-Noun {
 }
 ```
 
-you can create a funcition that accepts values from the pipeline. forexample you pipe users into the function. 
+you can create a funcition that accepts values from the pipeline. forexample you pipe users into the function.
+
 1. Begin part you might create some arrays, get some more data, do things you only need once.
 2. process then does something per item piped into the function.
 3. end runs at the end. maybe posts a completed list of something somewhere, creates an excel file and ships an email someplace.
-
-
-
 
 The advantage of using an advanced function is that it has a lot of built-in functionality. You can e.g. create a function that has parameters that are exclusive from one another.
 You can see more of this in the [Get-MrfkUserInfo](https://github.com/NorskNoobing/NN.MrfkCommands/blob/main/source/Public/Get-MrfkUserInfo.ps1) function.
@@ -778,6 +772,7 @@ function Test-NRKConnection {
     test-connection -targetname nrk.no -count $count
 }
 ```
+
 function above when run, pings NRK.NO for 4 counts. the count 4 is set as default in this instance.
 if you run `Test-NRKConnection -count 5` it will override the 4 with 5.
 
@@ -792,7 +787,6 @@ function Test-NRKConnection {
 if($test){ Write-Output "NRK is Online"} else{Write-Output"NRK is Offline"}
 }
 ```
-
 
 ### TASK 10
 
@@ -832,7 +826,9 @@ Almost all APIS use JSON to structure data.
     }
 }
 ```
+
 using an actual API
+
 ```powershell
 #flat easy json file to grasp
 $ip = "1.1.1.1"
@@ -921,12 +917,6 @@ if you use this instead of `Active Directory Users and Computers` you can look a
 
 ![screenshot of active directory administrative center powerhse](assets\images\2023-02-07-09-11-48.png)
 
-
-##### TASK 12
-
-create a csv file with a list of 3 users you want to create. create samaccountnames from those names. feed them into new-aduser and see if you manage to create users. 
-
-
 ### ConfigurationManager module
 
 MECM module to find deployed computers, who has logged on, their ip etc.
@@ -950,16 +940,13 @@ Get-CMDevice -Name "LT-SADM-001"
 
 Do this in a test enviroment if you have one.
 
-- make a change to a AD user using Active Directory Administrative Center.
-- find the command it used and use it to change it again to something else using PowerShell.
-- find an aduser using accountname  with powershell.
+- Make a change to a AD user using Active Directory Administrative Center.
+- Find the command it used and use it to change it again to something else using PowerShell.
+- Find an aduser using accountname  with powershell.
+- Create a csv file with a list of 3 users you want to create. create samaccountnames from those names. feed them into new-aduser and see if you manage to create users.
 
 ## Self Learning
 
-- PSkoan
+- Install [PSkoans](https://github.com/vexx32/PSKoans#prerequisites) by following the link. Go through installation of prereqs and the module. Solve the first Koan.
   - Interactive learning. try doing 1 PSKoan at work everyday. <https://github.com/vexx32/PSKoans>
 - Try to do stuff with powershell instead of GUI
-
-### task future
-
-Install [PSkoans](https://github.com/vexx32/PSKoans#prerequisites) by following the link. Go through installation of prereqs and the module. Solve the first Koan.
