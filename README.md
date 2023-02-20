@@ -3,9 +3,9 @@
 This readme contains the content for the entire course.
 
 whats missing?
+
 - [ ] better task for new-aduser
 - [ ] short explanation of wildcards
-- [ ] credentials and predictive intellisense log
 
 ## Prerequisits
 
@@ -59,6 +59,57 @@ this can happen if your system image is lacking shell components. the following 
 ```powershell
 Get-WindowsCapability -Name "*ShellComponents*" -Online | Add-WindowsCapability -Online
 ```
+
+### History pitfalls
+
+Powershell has a few logs
+
+#### Get-History
+
+holds the log for the current session. This history is deleted when the session ends. window is closed forexample.
+
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_history
+
+#### Predictive Intellisense
+
+Tracks commands used in all PowerShell Sessions. This history in not deleted when the session ends. its stored in a central file per host. normally on windows systems it can be opened and altered like this
+
+```powershell
+code $env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine
+```
+
+Predictive intellisense logs has a built in filter where it tries to avoid storing the following.
+
+- password
+- asplaintext
+- token
+- apikey
+- secret
+
+```powershell
+# when running this in powershell
+PS C:\Users> $password = "supersecretpassword"
+PS C:\Users> $password2 = read-host
+supersecretpassword
+PS C:\Users> $password3 = read-host -AsSecureString
+*******************
+PS C:\Users> $password3 | ConvertFrom-SecureString -AsPlainText
+supercecretpassword
+PS C:\Users> $secret = "stufffoundhere"
+PS C:\Users> $stuff = "secret"
+PS C:\Users> $stuff2 = "somestuff"
+
+# the following is stored in $env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine
+$password2 = read-host
+$password3 = read-host -AsSecureString
+$stuff2 = "somestuff"
+# filter is doing its thing
+```
+
+If you store sensitive information. be sure that its not laying around in your command history.
+
+more about psreadline history is found here.
+https://learn.microsoft.com/en-us/powershell/module/psreadline/about/about_psreadline
 
 ## Tools
 
@@ -387,8 +438,8 @@ Super fast but has its limits. If you encounter preformance issues. look into co
 ```powershell
 $htable = @{ EmpName="Charlie"; City="New York"; EmpID="001" }
 $htable2 = @{
-    “Key1” = “value1”
-    “Key2” = “value2”
+    Key1 = "value1"
+    Key2 = "value2"
     Key3 = "value3"
 }
 ```
@@ -420,6 +471,60 @@ Pipe `|` is usefull for oneliners but generaly slower than other methods, using 
 ```powershell
 Get-Content -Path $env:USERPROFILE\Services.txt | Get-Service
 ```
+
+## Math
+
+```powershell
+# powershell supports order of operation.
+2*3+4/3
+2*(3+4)/3
+# you can do math with variables
+$var = 1
+$var = $var + 3
+# ++ means +1 in most languages. 
+$var ++
+# -- means -1 in most languages
+$var --
+# += means add whatever comes after
+$var += 4
+
+# you can round three different ways
+[Math]::Round(2.5)
+[Math]::Round(3.5)
+[Math]::Floor(2.5)
+[Math]::Ceiling(2.5)
+
+# round in the math class uses bankers rounding. rounding even numbers down and odd numbers up. so pay attention to that. 
+# why is bankers rounding a thing?
+
+2.5 + 3.5
+# this should be 6
+
+[Math]::Round(2.5) + [Math]::Round(3.5)
+# rounding even and odd each way gives 6
+
+[Math]::Floor(2.5) + [Math]::Floor(3.5)
+# rounding down gives 5
+
+[Math]::Ceiling(2.5) + [Math]::Ceiling(3.5)
+# rounding up gives 7
+
+# when you round with [int]2.5 it defaults to using [math]::round()
+[int]2.5
+[int]3.5
+# if you want to preserve decimals you need to store it as a double
+(3.5).GetType() # should tell you what this is
+[double]3.5
+
+# more on rounding in general here https://en.wikipedia.org/wiki/Rounding
+
+# pi!
+[math]::pi
+```
+
+more about math here
+
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_arithmetic_operators
 
 ## operators
 
@@ -860,6 +965,34 @@ then uses that LAT/Long to get the weather using the Weather function.
 Using it should be something like this.
 `Get-WeatherIPInfo -ip "1.1.1.1"`
 
+## Logging
+
+Powershell scripts can be written without any logging, and thats fine for oneshots. but if something breaks it can be hard to figure out.
+
+logging could be as simple as adding the following code a bunch of time.
+
+```powershell
+#setting log message
+$message = "Log Message to record someplace"
+#creating a log object, could have more fields like severity etc
+$line = [pscustomobject]@{
+    'DateTime' = (Get-Date)
+    'Message'  = $Message
+}
+# exporting log object to csv file, -append means add to end. not overwrite.
+$line | Export-Csv -Path $LogFilePath -Append -NoTypeInformation
+```
+
+Or you could write a function that you use in your scripts.
+
+### Task 12
+
+- Create a log function, either using code above or writting something different.
+Requirements is that it stores it someplace still accessible after you close your PS window.
+- Use the log function in one of your functions in task 11.
+  - it should log if the page you are trying to query is offline
+  - it should log if you get data from the page.
+
 ## Modules
 
 You can run this function in order to get a list of all the functions in the module.
@@ -938,15 +1071,36 @@ Get-CMDevice -Name "LT-SADM-001"
 
 ### TASK 13
 
-Do this in a test enviroment if you have one.
+Do this in a test enviroment.
 
 - Make a change to a AD user using Active Directory Administrative Center.
 - Find the command it used and use it to change it again to something else using PowerShell.
 - Find an aduser using accountname  with powershell.
 - Create a csv file with a list of 3 users you want to create. create samaccountnames from those names. feed them into new-aduser and see if you manage to create users.
 
+## Production enviroments
+
+- Spend time testing code and think about what can go wrong.
+- Get before set. Be sure you are manipulating the correct data.
+- make it display code in text format before you do bulk changes.
+
+```powershell
+# try the following on your domain
+$users = Get-Aduser -Filter *
+foreach ( $user in $users){
+    "Set-Aduser -user $user -homepage 'testpage.com'"
+}
+# should display as text only and you then visually see what your code does
+```
+
+- log files. setup logging if possible.
+- hostname, are you on the correct box? running `hostname` might help
+- correct credentials? running whoami might help.
+- Visually different windows. My admin windows are red on my host.
+![admin shell with red background](assets\images\2023-02-20-16-35-28.png)
+
 ## Self Learning
 
 - Install [PSkoans](https://github.com/vexx32/PSKoans#prerequisites) by following the link. Go through installation of prereqs and the module. Solve the first Koan.
-  - Interactive learning. try doing 1 PSKoan at work everyday. <https://github.com/vexx32/PSKoans>
-- Try to do stuff with powershell instead of GUI
+  - Interactive powershell learning. try doing 1 PSKoan at work everyday.
+- Try to do stuff with powershell instead of GUI for daily tasks. Create a folder, txt file. get AD user information.
