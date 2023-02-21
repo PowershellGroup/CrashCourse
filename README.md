@@ -1048,7 +1048,8 @@ comes installed with Remote Server Administration Tools, which by default is ins
 
 if you use this instead of `Active Directory Users and Computers` you can look at the powershell command history. any changes you apply with the GUI launches a powershell command.
 
-![screenshot of active directory administrative center powerhse](assets\images\2023-02-07-09-11-48.png)
+![screenshot of active directory administrative center powershell](assets/images/2023-02-07-09-11-48.png)
+
 
 ### ConfigurationManager module
 
@@ -1097,7 +1098,7 @@ foreach ( $user in $users){
 - hostname, are you on the correct box? running `hostname` might help
 - correct credentials? running whoami might help.
 - Visually different windows. My admin windows are red on my host.
-![admin shell with red background](assets\images\2023-02-20-16-35-28.png)
+![admin shell with red background](assets/images/2023-02-20-16-35-28.png)
 
 ## Self Learning
 
