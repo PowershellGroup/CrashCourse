@@ -433,7 +433,7 @@ more info on pscustomobjects <https://docs.microsoft.com/en-us/powershell/script
 
 ### Hashtable
 
-Super fast but has its limits. If you encounter preformance issues. look into converting your arrays or arraylists if possible to hashtables.
+Super fast but has its limits. If you encounter preformance issues. look into converting your arrays or arraylists if possible to hashtables. you can possibly make things that take hours run in minutes.
 
 ```powershell
 $htable = @{ EmpName="Charlie"; City="New York"; EmpID="001" }
@@ -442,7 +442,17 @@ $htable2 = @{
     Key2 = "value2"
     Key3 = "value3"
 }
+
+# adding 
+$htable2.Add("Key4","value4")
+# getting
+$htable2 
+#or 
+$htable2.key4
 ```
+
+more about hashtables here.
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_hash_tables
 
 ### Task 5
 
@@ -528,10 +538,6 @@ https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/ab
 
 ## operators
 
-More about operators here
-<https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.2>
-or `get-help about_operators`
-
 There are plenty but the logical and comparison operators are the most used ones.
 
 ### Comparison operators
@@ -558,9 +564,13 @@ etc.
 
 ![exclusive or table](/assets/images/2022-07-04-16-36-32.png)
 
+More about operators here
+<https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_operators?view=powershell-7.2>
+or `get-help about_operators`
+
 ### task 7
 
-Try running the operators listed
+Try running the operators listed above.
 
 ## controll flow
 
@@ -932,16 +942,26 @@ Almost all APIS use JSON to structure data.
 }
 ```
 
-using an actual API
-
+using an actual API. You have two easy to use ways to get webcontent using powershell. `Invoke-Webrequest` and `Invoke-RestMethod`.
 ```powershell
 #flat easy json file to grasp
+
 $ip = "1.1.1.1"
+# take a look at content below. 
+$content = Invoke-Webrequest -uri "https://ipinfo.io/$ip/json"
+# run $content, and $content.content and 
+$content.content | ConvertFrom-Json
+# $content | convertfrom-json also works.
+# or you could just do this 
 Invoke-RestMethod -uri "https://ipinfo.io/$ip/json"
+
+# Difference between Invoke-Webrequest and Invoke-RestMethod is that invoke restmethod has convertfrom-json built inn. I almost never use invoke-webrequest.
+
 # this weather one has alot more depth with forecast every hour etc. so getting the weather right now requires some more 
 $lat = "34.05"
 $lon = "-118.24"
 $weather = Invoke-RestMethod -uri "https://api.met.no/weatherapi/locationforecast/2.0/compact?&lat=$lat&lon=$lon"
+
 $weather.properties.timeseries[0].data.instant.details
 ```
 
@@ -1077,6 +1097,7 @@ Do this in a test enviroment.
 - Make a change to a AD user using Active Directory Administrative Center.
 - Find the command it used and use it to change it again to something else using PowerShell.
 - Find an aduser using accountname  with powershell.
+- Find an aduser using first half of firstname and last half of lastname.
 - Create a csv file with a list of 3 users you want to create. create samaccountnames from those names. feed them into new-aduser and see if you manage to create users.
 
 ## Production enviroments
