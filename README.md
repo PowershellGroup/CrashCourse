@@ -2,11 +2,6 @@
 
 This readme contains the content for the entire course.
 
-whats missing?
-
-- [ ] better task for new-aduser
-- [ ] short explanation of wildcards
-
 ## Prerequisits
 
 The following tools must be installed before the course starts.
