@@ -153,9 +153,10 @@ try the keybindings. spesifically Ctrl+shift+P and alt+click
 |cd|Set-Location|sl, cd, chdir|
 |dir|Get-ChildItem|gci,dir,ls|
 |ipconfig|Get-NetIPConfiguration|gip|
-|tracert|Test-NetConnection -traceroute|tnc -tr|
+|nslookup|Resolve-DnsName||
+|tracert|Test-NetConnection -Traceroute/ Test-Connection -Traceroute|tnc -tr|
 |shutdown|Stop-Computer / Restart-Computer||
-|type|get-content|cat, gc, type|
+|type|Get-Content|cat, gc, type|
 
 All powershell functions are built using verb-noun
 
