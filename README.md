@@ -807,7 +807,7 @@ function Verb-Noun {
 }
 ```
 
-Advanced functions are a little more complex, but have much more functionality. Therefore we most likely would always want to create an advanced function. Here's a basic version of an advanced function.
+Advanced functions have more functionality that can among other things speed up your code drastically.
 
 ```powershell
 function Verb-Noun {
@@ -831,11 +831,11 @@ function Verb-Noun {
 }
 ```
 
-you can create a funcition that accepts values from the pipeline. forexample you pipe users into the function.
+you can create a funcition that accepts values from the pipeline. forexample you pipe a list of users into the function.
 
-1. Begin part you might create some arrays, get some more data, do things you only need once.
-2. process then does something per item piped into the function.
-3. end runs at the end. maybe posts a completed list of something somewhere, creates an excel file and ships an email someplace.
+1. **Begin**: in this block you might create some arrays, get data, do things you only need once. will save time compared to doing it every time for each item in the process block.
+2. **process**: does something per item piped into the function. usually this is where you process the information and do all the magic. 
+3. **end**: runs at the end. maybe posts a completed list of something somewhere, creates an excel file and ships an email someplace. if you created som temporary files, this is where you would clean up those files.
 
 The advantage of using an advanced function is that it has a lot of built-in functionality. You can e.g. create a function that has parameters that are exclusive from one another.
 You can see more of this in the [Get-MrfkUserInfo](https://github.com/NorskNoobing/NN.MrfkCommands/blob/main/source/Public/Get-MrfkUserInfo.ps1) function.
