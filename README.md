@@ -1119,6 +1119,10 @@ foreach ( $user in $users){
 
 ## Self Learning
 
+- **Most important step!** Try to do stuff with powershell instead of GUI for daily tasks.
+  - Create a folder, txt file. use Get-Aduser to get information about a user instead of GUI, and create your own functions to speed up this process.
+  - Use GUI as a fallback. If its stressfull, use GUI to solve problems. For the days where you have the time, use powershell. in the longrun you will learn much more, and end up saving time through your powershell skills.
+- Solve [Advent Of Code](https://adventofcode.com/)
+  - If your new to programming, solving advent of code problems will realy get you into using If/else/switch/foreach/where/hashtables etc and the pitfalls of using them. Highly recomended, some code companies even use advent of code tasks for recruitment purposes.
 - Install [PSkoans](https://github.com/vexx32/PSKoans#prerequisites) by following the link. Go through installation of prereqs and the module. Solve the first Koan.
-  - Interactive powershell learning. try doing 1 PSKoan at work everyday.
-- Try to do stuff with powershell instead of GUI for daily tasks. Create a folder, txt file. get AD user information.
+  - Interactive powershell learning. try doing 1 PSKoan at work everyday. I havent personally done this, but comes recomended by the PowerShell team.
